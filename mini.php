@@ -1,6 +1,6 @@
 <?php
 $dir = dirname(__FILE__);
-require($dir . '/' . 'cssmin.php');
+require($dir . '/CssMin/minified/' . 'CssMin.php');
 
 /**
  * Формат файла:
