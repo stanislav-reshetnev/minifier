@@ -3,15 +3,15 @@ $dir = dirname(__FILE__);
 require($dir . '/' . 'cssmin.php');
 
 /**
- * Формат файла:
- * * полное_имя_файла unix_timestamp
- * unix_timestamp может быть не задан; в таком случае файл считается новым.
- * Имя файла должно оканчиваться на .css или .js.
+ * Р¤РѕСЂРјР°С‚ С„Р°Р№Р»Р°:
+ * * РїРѕР»РЅРѕРµ_РёРјСЏ_С„Р°Р№Р»Р° unix_timestamp
+ * unix_timestamp РјРѕР¶РµС‚ Р±С‹С‚СЊ РЅРµ Р·Р°РґР°РЅ; РІ С‚Р°РєРѕРј СЃР»СѓС‡Р°Рµ С„Р°Р№Р» СЃС‡РёС‚Р°РµС‚СЃСЏ РЅРѕРІС‹Рј.
+ * РРјСЏ С„Р°Р№Р»Р° РґРѕР»Р¶РЅРѕ РѕРєР°РЅС‡РёРІР°С‚СЊСЃСЏ РЅР° .css РёР»Рё .js.
  */
 define('MINIFIER_FILE_LIST', 'files-minifier.lst');
-/** Окончание имени выходного файла для CSS */
+/** РћРєРѕРЅС‡Р°РЅРёРµ РёРјРµРЅРё РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р° РґР»СЏ CSS */
 define('CSS_OUTPUT_POSTFIX', '.min.css');
-/** Окончание имени выходного файла для JS */
+/** РћРєРѕРЅС‡Р°РЅРёРµ РёРјРµРЅРё РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р° РґР»СЏ JS */
 define('JS_OUTPUT_POSTFIX', '.min.js');
 
 
@@ -28,13 +28,13 @@ foreach ($file_list as $file_list_idx => $file_entry) {
   }
   $file_name = $file_entry_data[0];
 
-  // Дата предыдущей обработки - её может и не быть
+  // Р”Р°С‚Р° РїСЂРµРґС‹РґСѓС‰РµР№ РѕР±СЂР°Р±РѕС‚РєРё - РµС‘ РјРѕР¶РµС‚ Рё РЅРµ Р±С‹С‚СЊ
   $file_processed_time = empty($file_entry_data[1]) ? 0 : (int) $file_entry_data[1];
   if (!file_exists($file_name) || (false === $file_mtime = filemtime($file_name))) {
     continue;
   }
 
-  // Файл был обновлён после обхода минификатором
+  // Р¤Р°Р№Р» Р±С‹Р» РѕР±РЅРѕРІР»С‘РЅ РїРѕСЃР»Рµ РѕР±С…РѕРґР° РјРёРЅРёС„РёРєР°С‚РѕСЂРѕРј
   if ($file_mtime > $file_processed_time) {
     $status_ok = false;
     if (preg_match('~\.css$~i', $file_name)) {
@@ -54,7 +54,7 @@ foreach ($file_list as $file_list_idx => $file_entry) {
   }
 }
 
-// Что-то было обработано
+// Р§С‚Рѕ-С‚Рѕ Р±С‹Р»Рѕ РѕР±СЂР°Р±РѕС‚Р°РЅРѕ
 if (!empty($status_ok)) {
   file_put_contents($file_list_fullpath, implode('', $file_list));
 }
@@ -63,12 +63,12 @@ print 'End of processing at ' . date("d.m.Y H:i:s") . "\n---\n\n";
 
 
 /**
- * Генерирует минифицированный CSS-файл.<br />
- * Результат: созданный файл в исходной папке с добавленным постфиксом OUTPUT_CSS_POSTFIX.
+ * Р“РµРЅРµСЂРёСЂСѓРµС‚ РјРёРЅРёС„РёС†РёСЂРѕРІР°РЅРЅС‹Р№ CSS-С„Р°Р№Р».<br />
+ * Р РµР·СѓР»СЊС‚Р°С‚: СЃРѕР·РґР°РЅРЅС‹Р№ С„Р°Р№Р» РІ РёСЃС…РѕРґРЅРѕР№ РїР°РїРєРµ СЃ РґРѕР±Р°РІР»РµРЅРЅС‹Рј РїРѕСЃС‚С„РёРєСЃРѕРј OUTPUT_CSS_POSTFIX.
  *
  * @see OUTPUT_CSS_POSTFIX
- * @param string $filename Имя исходного файла
- * @return boolean Успешность операции
+ * @param string $filename РРјСЏ РёСЃС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°
+ * @return boolean РЈСЃРїРµС€РЅРѕСЃС‚СЊ РѕРїРµСЂР°С†РёРё
  */
 function generateMinifiedCss($filename)
 {
@@ -79,7 +79,7 @@ function generateMinifiedCss($filename)
   if (false !== $source_code) {
     $processed_code = CssMin::minify(file_get_contents($filename));
 
-    // Если ошибка в обработке минификатором, копируем исходный файл
+    // Р•СЃР»Рё РѕС€РёР±РєР° РІ РѕР±СЂР°Р±РѕС‚РєРµ РјРёРЅРёС„РёРєР°С‚РѕСЂРѕРј, РєРѕРїРёСЂСѓРµРј РёСЃС…РѕРґРЅС‹Р№ С„Р°Р№Р»
     if (0 == strlen($processed_code)) {
       $processed_ok = false;
     }
@@ -143,10 +143,10 @@ function generateMinifiedJs($filename)
 }
 
 /*
- * Сгенерировать имя выходного файла
+ * РЎРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ РёРјСЏ РІС‹С…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°
  *
- * @param string $filename Имя файла
- * @param string $postfix Постфикс
+ * @param string $filename РРјСЏ С„Р°Р№Р»Р°
+ * @param string $postfix РџРѕСЃС‚С„РёРєСЃ
  * @return string
  */
 function getOutputFilename($filename, $postfix)
@@ -157,7 +157,7 @@ function getOutputFilename($filename, $postfix)
 }
 
 /**
- * Записать на место нового файла старый, сохраняя права доступа
+ * Р—Р°РїРёСЃР°С‚СЊ РЅР° РјРµСЃС‚Рѕ РЅРѕРІРѕРіРѕ С„Р°Р№Р»Р° СЃС‚Р°СЂС‹Р№, СЃРѕС…СЂР°РЅСЏСЏ РїСЂР°РІР° РґРѕСЃС‚СѓРїР°
  *
  * @param $src_filename
  * @param $output_filename
@@ -171,7 +171,7 @@ function copySourceToResultFile($src_filename, $output_filename)
 }
 
 /**
- * Установить права (флаги доступа и владельца) исходного файла на выходной
+ * РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РїСЂР°РІР° (С„Р»Р°РіРё РґРѕСЃС‚СѓРїР° Рё РІР»Р°РґРµР»СЊС†Р°) РёСЃС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р° РЅР° РІС‹С…РѕРґРЅРѕР№
  *
  * @param $src_filename
  * @param $output_filename
